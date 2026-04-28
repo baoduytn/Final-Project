@@ -6,14 +6,16 @@ let baseJackpotChance = 0.01;
 // Pity increases jackpot chance when losing
 let pityBonus = 0;
 
-// Max pity bonus (so jackpot chance never exceeds 10%)
+// Max pity bonus (you set 15%)
 const maxPityBonus = 0.15;
 
 function generateMoney() {
-    // Risk increases as money increases (max 40%)
-    const riskFactor = Math.min(currentAmount / 500, 0.40);
 
-    // Total jackpot chance = base + pity
+    // ⭐ Risk increases as money increases (max 60%)
+    // You had 40%, but dynamic loss works better with a higher cap
+    const riskFactor = Math.min(currentAmount / 200, 0.50);
+
+    // ⭐ Total jackpot chance = base + pity
     const jackpotChance = Math.min(baseJackpotChance + pityBonus, 0.10);
 
     // Roll once for all outcomes
@@ -21,19 +23,24 @@ function generateMoney() {
 
     // 🎰 JACKPOT
     if (roll < jackpotChance) {
-        const jackpotMultiplier = Math.random() * 15 + 5; // 5x–20x
+        const jackpotMultiplier = Math.random() * 100 + 5; // 5x–20x
         currentAmount = Math.floor(currentAmount * jackpotMultiplier);
 
         // Reset pity
         pityBonus = 0;
     }
 
-    // 💥 BIG DROP
+    // 💥 BIG DROP (chance increases with money)
     else if (roll < jackpotChance + riskFactor) {
-        const dropPercent = Math.random() * 0.40 + 0.30; // 30%–70%
+
+        // ⭐ Loss size increases with money
+        // Minimum 20% loss, maximum 90% loss
+        const dynamicLoss = Math.min(currentAmount / 200, 0.70);
+        const dropPercent = 0.20 + Math.random() * dynamicLoss;
+
         currentAmount = Math.max(1, Math.floor(currentAmount * (1 - dropPercent)));
 
-        // Increase pity slightly (0.5% per loss)
+        // ⭐ Increase pity slightly (you set +0.01 = +1% per loss)
         pityBonus = Math.min(pityBonus + 0.01, maxPityBonus);
     }
 
@@ -43,7 +50,7 @@ function generateMoney() {
         currentAmount = Math.floor(currentAmount * growthFactor) + 1;
 
         // Growth does NOT increase pity
-        // But also does NOT reset it
+        // Growth does NOT reset pity
     }
 
     document.getElementById("moneyText").textContent = "$" + currentAmount;
