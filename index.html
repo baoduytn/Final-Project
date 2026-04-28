@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html>
 
+
+
 <head>
 	<meta charset="UTF-8">
 	<title>Final Project</title>
+	<link rel="stylesheet" href="./assets/styles.css">
+
 	<style>
+
+
 		/* these rules change the whole page */
 		body {
 			font-family: 'arial';
@@ -41,32 +47,59 @@
 		}
 		
 		h2 {
-			color: rgba(139, 197, 173, 0.267);
+			color: rgba(64, 90, 79, 0.267);
 			text-align: center;
-			font-size: 40px;
+			font-size: 60px;
 			letter-spacing: 1px;
 			/* negative margins decrease space between lines */
-			margin-top: 90px;
-			margin-bottom: -100px
+			margin-top: 300px;
+			margin-bottom: -100px;
 			}
+	
 		
-		h2 a {
-			color: rgba(101, 143, 126, 0.267); 
-            text-decoration: none;
-		}
 		
+
 	</style>
 
 </head>
 
 <body>
-    	<h1>
-		UNPROFESSIONAL DECISIONS
-		</h1>
+
+    <h1>UNPROFESSIONAL DECISIONS</h1>
+
+    <div class="money-section">
+        <h2 id="h2.static-text">$1</h2>
+        <img src="money.png" class="center-img" alt="Money Illustration" onclick="generateMoney()">
+    </div>
 
 
 
-	
+
+    <script src="./assets/main.js"></script>
+
+   <script>
+let currentAmount = 1;
+
+function generateMoney() {
+    // Chance of a big drop (10%)
+    const dropChance = Math.random();
+
+    if (dropChance < 0.10) {
+        // Big drop: lose 30% to 60%
+        const dropPercent = Math.random() * 0.30 + 0.30;
+        currentAmount = Math.max(1, Math.floor(currentAmount * (1 - dropPercent)));
+    } else {
+        // Exponential growth: multiply by 1.1 to 1.5
+        const growthFactor = 1.1 + Math.random() * 0.4;
+        currentAmount = Math.floor(currentAmount * growthFactor) + 1;
+    }
+
+    document.getElementById("moneyText").textContent = "$" + currentAmount;
+}
+</script>
+
+
 </body>
+
 
 </html>
