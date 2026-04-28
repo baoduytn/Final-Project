@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>hyperlink-narrative</title>
+	<style>
+		/* these rules change the whole page */
+		body {
+			font-family: 'arial';
+			background-color: rgb(193, 243, 226);
+			color: rgba(139, 197, 173, 0.267);
+		}
+	    p1 {
+			font-weight: bold;
+			text-align: center;
+			font-size: 30px;
+			/* use positive margins to increase space between lines of block level elements */
+			margin-top: 50px;
+			margin-bottom: 35px;
+        }
+		div {
+			font-size: 30px;
+			font-weight: bold;
+			font-style: oblique;
+			/* use positive margins to increase space between lines of block level elements */
+			margin-top: -3px;
+			margin-bottom: 35px;
+        }
+
+
+	
+		h1 {
+			color: rgba(139, 197, 173, 0.267);
+			text-align: center;
+			font-size: 117px;
+			letter-spacing: 1px;
+			/* negative margins decrease space between lines */
+			margin-top: 240px;
+			margin-bottom: -90px;
+		}
+		
+		h2 {
+			color: rgba(139, 197, 173, 0.267);
+			text-align: center;
+			font-size: 40px;
+			letter-spacing: 1px;
+			/* negative margins decrease space between lines */
+			margin-top: 90px;
+			margin-bottom: -100px
+			}
+		
+		h2 a {
+			color: rgba(101, 143, 126, 0.267); 
+            text-decoration: none;
+		}
+		
+	</style>
+
+</head>
+
+<body>
+    	<h1>
+		unprofessional
+		</h1>
+
+
+
+	
+</body>
+
+</html>
