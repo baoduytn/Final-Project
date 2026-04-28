@@ -7,7 +7,7 @@ body {
     display: block;
     margin: 0 auto;
     width: 650px;
-    margin-top: 300px;
+    margin-top: 200px;
 }
 
 /* remove width override so .center-img works */
