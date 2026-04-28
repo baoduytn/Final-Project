@@ -7,22 +7,32 @@ body {
     display: block;
     margin: 0 auto;
     width: 650px;
-    margin-top: 150px;
+    margin-top: 300px;
 }
 
-/* ensure no weird filters affect the image */
+/* remove width override so .center-img works */
 img {
     filter: none;
-    width: 50%;
+
 }
 
 /* Only style the bottom $1 under the title */
 h2.static-text {
     color: rgba(64, 90, 79, 0.267);
     text-align: center;
-    font-size: 60px;
+    font-size: 80px;
     letter-spacing: 1px;
     margin-top: 200px;
     margin-bottom: -100px;
 }
+
+/* Style for the random money generator text */
+#moneyText {
+    color: rgba(64, 90, 79, 0.9);
+    text-align: center;
+    font-size: 60px;
+    margin-top: 200px;     /* adjust this to move it down */
+    margin-bottom: 20px;
+}
+
 
