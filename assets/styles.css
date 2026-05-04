@@ -100,10 +100,6 @@ h2.static-text {
     letter-spacing: 10px;
     text-align: center;
 }
-.jackpot-highlight {
-    color: rgb(255, 230, 0) !important;
-    text-shadow: 1px 1px 8px #000;
-}
 
 #jackpot-money-overlay {
     display: none;
