@@ -4,13 +4,37 @@ let pityBonus = 0;
 const maxPityBonus = 0.15;
 const veryLowAmount = 5;
 
+// 🎰 List of jackpot GIFs
+const jackpotGifs = [
+    "assets/dolphin.gif",
+    "assets/me treasure.gif",
+    "assets/teasure chest.gif",
+    "assets/walter-white-i-won.gif"
+];
+
+// Track last GIF to avoid repeats
+let lastGifIndex = -1;
+
+// Get a random GIF (no repeat)
+function getRandomGif() {
+    let index;
+    do {
+        index = Math.floor(Math.random() * jackpotGifs.length);
+    } while (index === lastGifIndex && jackpotGifs.length > 1);
+
+    lastGifIndex = index;
+    return jackpotGifs[index];
+}
+
 // Show GIF overlay and large text overlays
 function showJackpotBg(currentAmount) {
     const jackpotBg = document.getElementById("jackpot-bg");
     const jackpotText = document.getElementById("jackpot-text-overlay");
     const jackpotMoney = document.getElementById("jackpot-money-overlay");
 
-    jackpotBg.style.backgroundImage = "url('assets/me treasure.gif?" + Date.now() + "')";
+    const randomGif = getRandomGif();
+
+    jackpotBg.style.backgroundImage = "url('" + randomGif + "?" + Date.now() + "')";
     jackpotBg.style.display = "block";
     jackpotText.style.display = "block";
     jackpotMoney.textContent = "$" + currentAmount;
@@ -19,8 +43,9 @@ function showJackpotBg(currentAmount) {
 
 // Hide GIF overlay and large text overlays
 function hideJackpotBg() {
-    document.getElementById("jackpot-bg").style.display = "none";
-    document.getElementById("jackpot-bg").style.backgroundImage = "";
+    const jackpotBg = document.getElementById("jackpot-bg");
+    jackpotBg.style.display = "none";
+    jackpotBg.style.backgroundImage = "";
     document.getElementById("jackpot-text-overlay").style.display = "none";
     document.getElementById("jackpot-money-overlay").style.display = "none";
 }
@@ -29,6 +54,7 @@ function hideJackpotBg() {
 function setBoxHighlight(isJackpot) {
     const topBox = document.getElementById("topBox");
     const bottomBox = document.getElementById("bottomBox");
+
     if (isJackpot) {
         topBox.classList.add("jackpot-highlight");
         bottomBox.classList.add("jackpot-highlight");
@@ -39,7 +65,6 @@ function setBoxHighlight(isJackpot) {
 }
 
 function generateMoney() {
-    let previousAmount = currentAmount;
     let outcome = "";
 
     const riskFactor = Math.min(currentAmount / 200, 0.50);
@@ -84,6 +109,7 @@ function generateMoney() {
         hideJackpotBg();
         mainTitle.style.visibility = "visible";
         setBoxHighlight(false);
+
         if (outcome === "MAJORLOSS") {
             topBox.textContent = "MAJOR LOSS";
             bottomBox.textContent = "MAJOR LOSS";
