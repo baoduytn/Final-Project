@@ -24,6 +24,9 @@ body {
     padding-top: 160px;
     padding-bottom: 160px;
     background-color: rgb(193, 243, 226);
+    background-image: url('me treasure.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 /* center and resize the image */
