@@ -1,5 +1,9 @@
 body {
     color: rgb(139, 197, 173);
+    margin: 0;
+    padding: 0;
+    padding-top: 180px;
+    padding-bottom: 180px;
 }
 
 /* center and resize the image */
@@ -15,7 +19,6 @@ body {
 /* remove width override so .center-img works */
 img {
     filter: none;
-
 }
 
 /* Only style the bottom $1 under the title */
@@ -33,32 +36,31 @@ h2.static-text {
     color: rgba(64, 90, 79, 0.9);
     text-align: center;
     font-size: 60px;
-    margin-top: 20px;     /* adjust this to move it down */
+    margin-top: 20px;
     margin-bottom: 260px;
-}
-
-.gamble-container {
-    display: auto;
-    justify-content: center;
-    align-items: center;
-    margin-top: 100px;
-  
 }
 
 .gamble-box {
     background-color: rgb(255, 230, 0);
-    padding: 30px 50px; /* larger boxes */
+    padding: 30px 50px;
     font-family: Comic Relief;
-    font-size: 100px;    /* larger text */
+    font-size: 100px;
     font-weight: bold;
     color: black;
-    margin-top: -90px;
-   /* prevents stretching */
-
-
-
     text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
 }
 
-
-
+.gamble-box:last-of-type {
+    position: fixed;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    z-index: 1000;
+}

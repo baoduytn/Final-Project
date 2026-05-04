@@ -11,17 +11,18 @@
             font-family: 'arial';
             background-color: rgb(193, 243, 226);
             color: rgba(139, 197, 173, 0.267);
+            margin: 0;
+            padding: 0;
         }
 
         h1 {
             color: rgba(139, 197, 173, 0.267);
             text-align: center;
             font-size: 117px;
-            margin-top: 100px;
+            margin-top: 200px;
             margin-bottom: -10px;
         }
 
-        /* bottom $1 styling */
         h2.static-text {
             color: rgba(64, 90, 79, 0.267);
             text-align: center;
@@ -30,16 +31,15 @@
             margin-bottom: -100px;
         }
 
-        /* random money text styling */
         #moneyText {
             color: rgba(64, 90, 79, 0.9);
             text-align: center;
             font-size: 60px;
             margin-top: 80px;
-            margin-bottom: 20px;
+            margin-bottom: 200px;
         }
 
-           p {
+        p {
             font-family: Comic Relief;
             font-weight: 700;
             color: rgb(90, 90, 90);
@@ -52,18 +52,15 @@
 </head>
 
 <body>
-<div class="gamble-container"></div>
- <div class="gamble-box">GAMBLE</div>
+    <div class="gamble-box">GAMBLE</div>
+
     <h1>UNPROFESSIONAL DECISIONS</h1>
-
-
 
     <img src="money.png" class="center-img" alt="Money Illustration" onclick="generateMoney()">
 
     <h2 id="moneyText" class="static-text">$1</h2>
 
     <div class="gamble-box">NOW</div>
-
 
     <script src="./assets/main.js"></script>
 </body>
