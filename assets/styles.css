@@ -36,7 +36,7 @@ body {
     padding-top: 160px;
     padding-bottom: 160px;
     background-color: rgb(193, 243, 226);
-    background-image: url('me treasure.gif');
+    background-image: url('assets/me treasure.gif');
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -84,6 +84,43 @@ h2.static-text {
   
 }
 
+#jackpot-text-overlay {
+    display: none;
+    position: fixed;
+    z-index: 11000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 160px;
+    font-family: 'Comic Relief', 'Arial', sans-serif;
+    color: rgb(255, 230, 0);
+    text-shadow: 6px 6px 30px #222, 2px 2px 4px #000;
+    font-weight: bold;
+    pointer-events: none;
+    letter-spacing: 10px;
+    text-align: center;
+}
+.jackpot-highlight {
+    color: rgb(255, 230, 0) !important;
+    text-shadow: 1px 1px 8px #000;
+}
+
+#jackpot-money-overlay {
+    display: none;
+    position: fixed;
+    z-index: 11001; /* on top of jackpot bg and text */
+    top: 65%;   /* Adjust for best appearance, maybe 65-68% */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    font-family: 'Comic Relief', 'Arial', sans-serif;
+    color: rgb(255, 230, 0);
+    text-shadow: 4px 4px 16px #222, 1px 1px 4px #000;
+    font-weight: bold;
+    pointer-events: none;
+    letter-spacing: 4px;
+    text-align: center;
+}
 
 
 
