@@ -4,150 +4,202 @@ let pityBonus = 0;
 const maxPityBonus = 0.15;
 const veryLowAmount = 5;
 
-// 🎰 List of jackpot GIFs
+let lossStreak = 0;
+let isSoulCrashActive = false;
+let gameLocked = false;
+
 const jackpotGifs = [
     "assets/dolphin.gif",
     "assets/me treasure.gif",
     "assets/treasure chest.gif",
-    "assets/walter-white-i-won.gif"
+    "assets/walter-white-i-won.gif",
 ];
 
-// 💥 List of major loss GIFs
+// 💥 MAJOR LOSS GIFS
 const majorLossGifs = [
-    "assets/elmo fire meme.gif",
     "assets/ryan-gosling-bladerunner-2049.gif",
-    "assets/son.gif"
+    "assets/son.gif",
+    "assets/wheeze.gif",
+    "assets/ash-baby.gif"
 ];
 
-// Track last GIF to avoid repeats
-let lastGifIndex = -1;
-let lastMajorLossGifIndex = -1;
+// 💀 SOUL CRASH GIFS
+const soulGifs = [
+    "assets/elmo fire meme.gif",
+    "assets/coffin-dance.gif",
+    "assets/cooked-dog-meme.gif",
+    "assets/no-im-dead.gif"
+];
 
-// Get a random GIF (no repeat)
-function getRandomGif() {
+let lastSoulGifIndex = -1;
+
+// 🎰 GIF PICKER
+function getRandom(arr, lastIndexRef) {
     let index;
     do {
-        index = Math.floor(Math.random() * jackpotGifs.length);
-    } while (index === lastGifIndex && jackpotGifs.length > 1);
+        index = Math.floor(Math.random() * arr.length);
+    } while (index === lastIndexRef.value && arr.length > 1);
 
-    lastGifIndex = index;
-    return jackpotGifs[index];
+    lastIndexRef.value = index;
+    return arr[index];
 }
 
-// Show GIF overlay and large text overlays
-// Get a random MAJOR LOSS GIF (no repeat)
-function getRandomMajorLossGif() {
-    let index;
-    do {
-        index = Math.floor(Math.random() * majorLossGifs.length);
-    } while (index === lastMajorLossGifIndex && majorLossGifs.length > 1);
+let soulIndexRef = { value: -1 };
 
-    lastMajorLossGifIndex = index;
-    return majorLossGifs[index];
+function getSoulGif() {
+    return getRandom(soulGifs, soulIndexRef);
 }
 
-// Show GIF + text + money overlays with the same style used for JACKPOT
+// 🎭 OVERLAY
 function showOutcomeBg(label, amount, gifPath) {
-    const jackpotBg = document.getElementById("jackpot-bg");
-    const jackpotText = document.getElementById("jackpot-text-overlay");
-    const jackpotMoney = document.getElementById("jackpot-money-overlay");
+    const bg = document.getElementById("jackpot-bg");
+    const text = document.getElementById("jackpot-text-overlay");
+    const money = document.getElementById("jackpot-money-overlay");
 
-    jackpotBg.style.backgroundImage = "url('" + gifPath + "?" + Date.now() + "')";
-    jackpotBg.style.display = "block";
-    jackpotText.textContent = label;
-    jackpotText.style.display = "block";
-    jackpotMoney.textContent = "$" + amount;
-    jackpotMoney.style.display = "block";
+    bg.style.backgroundImage = `url('${gifPath}?${Date.now()}')`;
+    bg.style.display = "block";
+
+    text.style.display = "block";
+    text.textContent = label;
+
+    money.style.display = "block";
+    money.textContent = "$" + amount;
 }
 
-function showJackpotBg(currentAmount) {
-    showOutcomeBg("JACKPOT", currentAmount, getRandomGif());
-}
-
-function showMajorLossBg(currentAmount) {
-    showOutcomeBg("MAJOR LOSS", currentAmount, getRandomMajorLossGif());
-}
-// Hide GIF overlay and large text overlays
+// ❌ hide overlay
 function hideJackpotBg() {
-    const jackpotBg = document.getElementById("jackpot-bg");
-    jackpotBg.style.display = "none";
-    jackpotBg.style.backgroundImage = "";
+    document.getElementById("jackpot-bg").style.display = "none";
     document.getElementById("jackpot-text-overlay").style.display = "none";
     document.getElementById("jackpot-money-overlay").style.display = "none";
 }
 
-// Adds/removes highlight on box text for JACKPOT/MAJOR LOSS
-function setBoxHighlight(isHighlighted) {
-    const topBox = document.getElementById("topBox");
-    const bottomBox = document.getElementById("bottomBox");
-
-    if (isHighlighted) {
-        topBox.classList.add("jackpot-highlight");
-        bottomBox.classList.add("jackpot-highlight");
-    } else {
-        topBox.classList.remove("jackpot-highlight");
-        bottomBox.classList.remove("jackpot-highlight");
-    }
+// 🔄 reset
+function resetGameToStart() {
+    window.location.reload();
 }
 
+// 🧠 MAIN GAME
 function generateMoney() {
+    if (gameLocked) return;
+
     let outcome = "";
 
     const riskFactor = Math.min(currentAmount / 200, 0.50);
     const jackpotChance = Math.min(baseJackpotChance + pityBonus, 0.10);
     const roll = Math.random();
 
+    let soulChance = 0.01;
+
+    // 💀 HIGH RISK WHEN RICH
+    if (currentAmount >= 10000) {
+        soulChance = 0.05 + Math.min(currentAmount / 200000, 0.20);
+    }
+
     const topBox = document.getElementById("topBox");
     const bottomBox = document.getElementById("bottomBox");
     const mainTitle = document.getElementById("mainTitle");
+    const moneyText = document.getElementById("moneyText");
 
-    // JACKPOT
-    if (roll < jackpotChance) {
-        const jackpotMultiplier = Math.random() * 100 + 5; // 5x–105x
-        currentAmount = Math.floor(currentAmount * jackpotMultiplier);
-        pityBonus = 0;
+    // 💀 SOUL CRASH
+    if (roll < soulChance) {
+        currentAmount = -Math.floor(Math.random() * 500 + 1);
+        outcome = "SOUL";
+    }
+
+    // 🎰 JACKPOT
+    else if (roll < jackpotChance) {
+        currentAmount = Math.floor(currentAmount * (Math.random() * 100 + 5));
         outcome = "JACKPOT";
     }
-    // BIG DROP (lose)
+
+    // 💥 LOSS
     else if (roll < jackpotChance + riskFactor) {
-        const dynamicLoss = Math.min(currentAmount / 200, 0.70);
-        const dropPercent = 0.20 + Math.random() * dynamicLoss;
-        currentAmount = Math.max(1, Math.floor(currentAmount * (1 - dropPercent)));
-        pityBonus = Math.min(pityBonus + 0.01, maxPityBonus);
-        outcome = (currentAmount <= veryLowAmount) ? "MAJORLOSS" : "LOST";
+        const drop = 0.20 + Math.random() * 0.5;
+        currentAmount = Math.max(1, Math.floor(currentAmount * (1 - drop)));
+        lossStreak++;
+        outcome = lossStreak >= 2 ? "MAJORLOSS" : "LOST";
     }
-    // GROWTH (win)
+
+    // 📈 WIN
     else {
-        const growthFactor = 1.1 + Math.random() * 0.5;
-        currentAmount = Math.floor(currentAmount * growthFactor) + 1;
+        currentAmount = Math.floor(currentAmount * (1.1 + Math.random() * 0.5)) + 1;
+        lossStreak = 0;
         outcome = "WON";
     }
 
-    document.getElementById("moneyText").textContent = "$" + currentAmount;
+    if (currentAmount < 0) outcome = "SOUL";
+
+    moneyText.textContent = "$" + currentAmount;
+
+    // 🎯 STATES
 
     if (outcome === "JACKPOT") {
-        showJackpotBg(currentAmount);
+        hideJackpotBg();
+        showOutcomeBg("JACKPOT", currentAmount, getRandom(jackpotGifs, { value: -1 }));
+
+        gameLocked = false;
+        isSoulCrashActive = false;
+
         mainTitle.style.visibility = "hidden";
         topBox.textContent = "JACKPOT";
         bottomBox.textContent = "JACKPOT";
-        setBoxHighlight(true);
-    } else {
-        hideJackpotBg();
-        mainTitle.style.visibility = "visible";
-        setBoxHighlight(false);
 
-        if (outcome === "MAJORLOSS") {
-            showMajorLossBg(currentAmount);
-            mainTitle.style.visibility = "hidden";
-            topBox.textContent = "MAJOR LOSS";
-            bottomBox.textContent = "MAJOR LOSS";
-            setBoxHighlight(true);
-        } else if (outcome === "LOST") {
+        bottomBox.classList.remove("soul-mode");
+    }
+
+    else if (outcome === "MAJORLOSS") {
+        hideJackpotBg();
+        showOutcomeBg("MAJOR LOSS", currentAmount, getRandom(majorLossGifs, { value: -1 }));
+
+        gameLocked = false;
+        isSoulCrashActive = false;
+
+        mainTitle.style.visibility = "hidden";
+        topBox.textContent = "MAJOR LOSS";
+        bottomBox.textContent = "MAJOR LOSS";
+
+        bottomBox.classList.remove("soul-mode");
+    }
+
+    else if (outcome === "SOUL") {
+        hideJackpotBg();
+        showOutcomeBg("SELL YOUR SOUL", currentAmount, getSoulGif());
+
+        gameLocked = true;
+        isSoulCrashActive = true;
+
+        mainTitle.style.visibility = "hidden";
+
+        topBox.textContent = "SELL YOUR SOUL";
+        bottomBox.textContent = "CLICK TO RESTART";
+
+        bottomBox.classList.add("soul-mode");
+    }
+
+    else {
+        hideJackpotBg();
+
+        gameLocked = false;
+        isSoulCrashActive = false;
+
+        mainTitle.style.visibility = "visible";
+
+        bottomBox.classList.remove("soul-mode");
+
+        if (outcome === "LOST") {
             topBox.textContent = "YOU LOST";
             bottomBox.textContent = "YOU LOST";
-        } else if (outcome === "WON") {
+        } else {
             topBox.textContent = "YOU WON";
             bottomBox.textContent = "YOU WON";
         }
     }
 }
+
+// 🖱️ ONLY RESTART ON SOUL MODE
+document.getElementById("bottomBox").addEventListener("click", function () {
+    if (isSoulCrashActive && bottomBox.classList.contains("soul-mode")) {
+        resetGameToStart();
+    }
+});
+

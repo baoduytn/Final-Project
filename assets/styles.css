@@ -1,7 +1,7 @@
 #jackpot-bg {
     display: none;
     position: fixed;
-    z-index: 10000;
+    z-index: 1; /* 🔥 FIXED: was 10000 (this was covering UI) */
     inset: 0;
     width: 100vw;
     height: 100vh;
@@ -22,15 +22,18 @@
     position: fixed;
     left: 0;
     right: 0;
-    z-index: 10;
+    z-index: 100; /* 🔥 FIXED: ensures always above GIF */
     box-sizing: border-box;
 }
+
 .gamble-box.top {
     top: 0;
 }
+
 .gamble-box.bottom {
     bottom: 0;
 }
+
 body {
     margin: 0;
     padding-top: 160px;
@@ -51,13 +54,11 @@ body {
     cursor: pointer;
 }
 
-/* remove width override so .center-img works */
 img {
     filter: none;
-
 }
 
-/* Only style the bottom $1 under the title */
+/* bottom $ text */
 h2.static-text {
     color: rgba(64, 90, 79, 0.267);
     text-align: center;
@@ -67,27 +68,28 @@ h2.static-text {
     margin-bottom: -100px;
 }
 
-/* Style for the random money generator text */
+/* money text */
 #moneyText {
     color: rgba(64, 90, 79, 0.9);
     text-align: center;
     font-size: 60px;
-    margin-top: 20px;     /* adjust this to move it down */
+    margin-top: 20px;
     margin-bottom: 270px;
 }
 
+/* container */
 .gamble-container {
     display: auto;
     justify-content: center;
     align-items: center;
     margin-top: 100px;
-  
 }
 
+/* 🟡 JACKPOT TEXT */
 #jackpot-text-overlay {
     display: none;
     position: fixed;
-    z-index: 11000;
+    z-index: 200; /* ABOVE EVERYTHING */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -101,11 +103,12 @@ h2.static-text {
     text-align: center;
 }
 
+/* 💰 MONEY OVERLAY */
 #jackpot-money-overlay {
     display: none;
     position: fixed;
-    z-index: 11001; /* on top of jackpot bg and text */
-    top: 65%;   /* Adjust for best appearance, maybe 65-68% */
+    z-index: 200; /* ABOVE BACKGROUND */
+    top: 65%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 100px;
@@ -118,13 +121,24 @@ h2.static-text {
     text-align: center;
 }
 
+/* ✨ highlight */
 .jackpot-highlight {
     color: rgb(255, 230, 0);
     text-shadow: 6px 6px 30px #222, 2px 2px 4px #000;
 }
 
 
+/* 💀 SOUL MODE */
+.soul-mode {
+    cursor: pointer;
+    text-decoration: underline;
+    user-select: none;
+    animation: soulPulse 1.2s infinite;
+}
 
-
-
-
+/* optional danger pulse */
+@keyframes soulPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
