@@ -8,12 +8,20 @@ const veryLowAmount = 5;
 const jackpotGifs = [
     "assets/dolphin.gif",
     "assets/me treasure.gif",
-    "assets/teasure chest.gif",
+    "assets/treasure chest.gif",
     "assets/walter-white-i-won.gif"
+];
+
+// 💥 List of major loss GIFs
+const majorLossGifs = [
+    "assets/elmo fire meme.gif",
+    "assets/ryan-gosling-bladerunner-2049.gif",
+    "assets/son.gif"
 ];
 
 // Track last GIF to avoid repeats
 let lastGifIndex = -1;
+let lastMajorLossGifIndex = -1;
 
 // Get a random GIF (no repeat)
 function getRandomGif() {
@@ -27,20 +35,38 @@ function getRandomGif() {
 }
 
 // Show GIF overlay and large text overlays
-function showJackpotBg(currentAmount) {
+// Get a random MAJOR LOSS GIF (no repeat)
+function getRandomMajorLossGif() {
+    let index;
+    do {
+        index = Math.floor(Math.random() * majorLossGifs.length);
+    } while (index === lastMajorLossGifIndex && majorLossGifs.length > 1);
+
+    lastMajorLossGifIndex = index;
+    return majorLossGifs[index];
+}
+
+// Show GIF + text + money overlays with the same style used for JACKPOT
+function showOutcomeBg(label, amount, gifPath) {
     const jackpotBg = document.getElementById("jackpot-bg");
     const jackpotText = document.getElementById("jackpot-text-overlay");
     const jackpotMoney = document.getElementById("jackpot-money-overlay");
 
-    const randomGif = getRandomGif();
-
-    jackpotBg.style.backgroundImage = "url('" + randomGif + "?" + Date.now() + "')";
+    jackpotBg.style.backgroundImage = "url('" + gifPath + "?" + Date.now() + "')";
     jackpotBg.style.display = "block";
+    jackpotText.textContent = label;
     jackpotText.style.display = "block";
-    jackpotMoney.textContent = "$" + currentAmount;
+    jackpotMoney.textContent = "$" + amount;
     jackpotMoney.style.display = "block";
 }
 
+function showJackpotBg(currentAmount) {
+    showOutcomeBg("JACKPOT", currentAmount, getRandomGif());
+}
+
+function showMajorLossBg(currentAmount) {
+    showOutcomeBg("MAJOR LOSS", currentAmount, getRandomMajorLossGif());
+}
 // Hide GIF overlay and large text overlays
 function hideJackpotBg() {
     const jackpotBg = document.getElementById("jackpot-bg");
@@ -50,12 +76,12 @@ function hideJackpotBg() {
     document.getElementById("jackpot-money-overlay").style.display = "none";
 }
 
-// Adds/removes highlight on box text for JACKPOT
-function setBoxHighlight(isJackpot) {
+// Adds/removes highlight on box text for JACKPOT/MAJOR LOSS
+function setBoxHighlight(isHighlighted) {
     const topBox = document.getElementById("topBox");
     const bottomBox = document.getElementById("bottomBox");
 
-    if (isJackpot) {
+    if (isHighlighted) {
         topBox.classList.add("jackpot-highlight");
         bottomBox.classList.add("jackpot-highlight");
     } else {
@@ -111,8 +137,11 @@ function generateMoney() {
         setBoxHighlight(false);
 
         if (outcome === "MAJORLOSS") {
+            showMajorLossBg(currentAmount);
+            mainTitle.style.visibility = "hidden";
             topBox.textContent = "MAJOR LOSS";
             bottomBox.textContent = "MAJOR LOSS";
+            setBoxHighlight(true);
         } else if (outcome === "LOST") {
             topBox.textContent = "YOU LOST";
             bottomBox.textContent = "YOU LOST";

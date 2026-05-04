@@ -118,7 +118,10 @@ h2.static-text {
     text-align: center;
 }
 
-
+.jackpot-highlight {
+    color: rgb(255, 230, 0);
+    text-shadow: 6px 6px 30px #222, 2px 2px 4px #000;
+}
 
 
 
