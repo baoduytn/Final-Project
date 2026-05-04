@@ -1,7 +1,7 @@
 #jackpot-bg {
     display: none;
     position: fixed;
-    z-index: 1; /* 🔥 FIXED: was 10000 (this was covering UI) */
+    z-index: 1;
     inset: 0;
     width: 100vw;
     height: 100vh;
@@ -22,7 +22,7 @@
     position: fixed;
     left: 0;
     right: 0;
-    z-index: 100; /* 🔥 FIXED: ensures always above GIF */
+    z-index: 100;
     box-sizing: border-box;
 }
 
@@ -44,7 +44,7 @@ body {
     background-repeat: no-repeat;
 }
 
-/* center and resize the image */
+/* center image */
 .center-img {
     display: block;
     margin: auto;
@@ -58,16 +58,6 @@ img {
     filter: none;
 }
 
-/* bottom $ text */
-h2.static-text {
-    color: rgba(64, 90, 79, 0.267);
-    text-align: center;
-    font-size: 80px;
-    letter-spacing: 1px;
-    margin-top: 200px;
-    margin-bottom: -100px;
-}
-
 /* money text */
 #moneyText {
     color: rgba(64, 90, 79, 0.9);
@@ -77,68 +67,53 @@ h2.static-text {
     margin-bottom: 270px;
 }
 
-/* container */
-.gamble-container {
-    display: auto;
-    justify-content: center;
-    align-items: center;
-    margin-top: 100px;
-}
-
-/* 🟡 JACKPOT TEXT */
+/* overlays */
 #jackpot-text-overlay {
     display: none;
     position: fixed;
-    z-index: 200; /* ABOVE EVERYTHING */
+    z-index: 200;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 160px;
-    font-family: 'Comic Relief', 'Arial', sans-serif;
+    font-family: 'Comic Relief', sans-serif;
     color: rgb(255, 230, 0);
-    text-shadow: 6px 6px 30px #222, 2px 2px 4px #000;
+    text-shadow: 6px 6px 30px #000;
     font-weight: bold;
     pointer-events: none;
-    letter-spacing: 10px;
     text-align: center;
 }
 
-/* 💰 MONEY OVERLAY */
 #jackpot-money-overlay {
     display: none;
     position: fixed;
-    z-index: 200; /* ABOVE BACKGROUND */
-    top: 65%;
+    z-index: 200;
+
+    top: 70%; /* 👈 moved down from 65% */
+
     left: 50%;
     transform: translate(-50%, -50%);
+
     font-size: 100px;
-    font-family: 'Comic Relief', 'Arial', sans-serif;
+    font-family: 'Comic Relief', sans-serif;
     color: rgb(255, 230, 0);
-    text-shadow: 4px 4px 16px #222, 1px 1px 4px #000;
+    text-shadow: 4px 4px 20px #000;
     font-weight: bold;
     pointer-events: none;
-    letter-spacing: 4px;
     text-align: center;
 }
 
-/* ✨ highlight */
 .jackpot-highlight {
     color: rgb(255, 230, 0);
-    text-shadow: 6px 6px 30px #222, 2px 2px 4px #000;
+    text-shadow: 6px 6px 30px #000;
 }
 
-
-/* 💀 SOUL MODE */
-.soul-mode {
+/* 💀 INVISIBLE SOUL CLICK ZONE */
+#soulClickZone {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 99999;
     cursor: pointer;
-    text-decoration: underline;
-    user-select: none;
-    animation: soulPulse 1.2s infinite;
-}
-
-/* optional danger pulse */
-@keyframes soulPulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.6; }
-    100% { opacity: 1; }
+    background: transparent;
 }
