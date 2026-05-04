@@ -1,9 +1,29 @@
+.gamble-box {
+    background-color: rgb(255, 230, 0);
+    padding: 30px 50px;
+    font-family: 'Comic Relief', cursive, sans-serif;
+    font-size: 100px;
+    font-weight: bold;
+    color: black;
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    box-sizing: border-box;
+}
+.gamble-box.top {
+    top: 0;
+}
+.gamble-box.bottom {
+    bottom: 0;
+}
 body {
-    color: rgb(139, 197, 173);
     margin: 0;
-    padding: 0;
-    padding-top: 180px;
-    padding-bottom: 180px;
+    padding-top: 160px;
+    padding-bottom: 160px;
+    background-color: rgb(193, 243, 226);
 }
 
 /* center and resize the image */
@@ -19,6 +39,7 @@ body {
 /* remove width override so .center-img works */
 img {
     filter: none;
+
 }
 
 /* Only style the bottom $1 under the title */
@@ -36,31 +57,23 @@ h2.static-text {
     color: rgba(64, 90, 79, 0.9);
     text-align: center;
     font-size: 60px;
-    margin-top: 20px;
-    margin-bottom: 260px;
+    margin-top: 20px;     /* adjust this to move it down */
+    margin-bottom: 270px;
 }
 
-.gamble-box {
-    background-color: rgb(255, 230, 0);
-    padding: 30px 50px;
-    font-family: Comic Relief;
-    font-size: 100px;
-    font-weight: bold;
-    color: black;
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 1000;
-    box-sizing: border-box;
+.gamble-container {
+    display: auto;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+  
 }
 
-.gamble-box:last-of-type {
-    position: fixed;
-    bottom: 0;
-    top: auto;
-    width: 100%;
-    z-index: 1000;
-}
+
+
+
+
+
+
+
+
