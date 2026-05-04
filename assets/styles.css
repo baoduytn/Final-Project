@@ -72,7 +72,18 @@ h2.static-text {
   
 }
 
-
+#jackpot-bg {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    pointer-events: none;
+    /* No background-image here! JS controls it */
+}
 
 
 
