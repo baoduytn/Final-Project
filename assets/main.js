@@ -134,7 +134,7 @@ function generateMoney() {
         const drop = 0.10 + Math.random() * 0.55;
         currentAmount = Math.max(1, Math.floor(currentAmount * (1 - drop)));
         lossStreak++;
-        pityBonus = Math.min(pityBonus + 0.1, 1);
+        pityBonus = Math.min(pityBonus + 0.1, 1.1);
         outcome = (lossStreak >= 2) ? "MAJORLOSS" : "LOST";
     }
     else {
