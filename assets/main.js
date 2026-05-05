@@ -1,4 +1,4 @@
-let currentAmount = 1; 
+let currentAmount = 1;
 let baseJackpotChance = 0.01;
 let pityBonus = 0;
 
@@ -19,11 +19,11 @@ const moneyText = document.getElementById("moneyText");
 const soulClickZone = document.getElementById("soulClickZone");
 const moneyImg = document.querySelector(".center-img");
 
-// 🎰 GIF + SOUND PAIRS
+// 🎰 MEDIA
 const jackpotMedia = [
-    { gif: "assets/dolphin.gif", sound: ["assets/casino win.mp3","assets/i-actually-won.mp3"]},
+    { gif: "assets/dolphin.gif", sound: "assets/casino win.mp3" },
     { gif: "assets/me treasure.gif", sound: "assets/Me treasure.mp3" },
-    { gif: "assets/treasure chest.gif", sound: ["assets/casino win.mp3","assets/i-actually-won.mp3"]},
+    { gif: "assets/treasure chest.gif", sound: "assets/casino win.mp3" },
     { gif: "assets/walter-white-i-won.gif", sound: "assets/casino win.mp3" }
 ];
 
@@ -40,26 +40,21 @@ const soulMedia = [
     { gif: "assets/no-im-dead.gif", sound: "assets/unshaken.mp3" }
 ];
 
-// 🎰 RANDOM MEDIA
-function getRandomMedia(arr) {
+// 🎰 RANDOM
+function rand(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// 🔊 AUDIO SYSTEM
+// 🔊 AUDIO
 let currentAudio = null;
 
 function playSound(src) {
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
-
+    stopSound();
     currentAudio = new Audio(src);
     currentAudio.volume = 0.7;
     currentAudio.play();
 }
 
-// 🛑 STOP AUDIO
 function stopSound() {
     if (currentAudio) {
         currentAudio.pause();
@@ -82,29 +77,21 @@ function showOutcomeBg(label, amount, gifPath) {
 
     money.style.display = "block";
     money.textContent = "$" + amount;
-
-    if (label === "SELL YOUR SOUL") {
-        text.style.transform = "translate(-50%, -60%)";
-        money.style.transform = "translate(-50%, -40%)";
-    } else {
-        text.style.transform = "translate(-50%, -50%)";
-        money.style.transform = "translate(-50%, -50%)";
-    }
 }
 
-// ❌ hide overlay
 function hideJackpotBg() {
     document.getElementById("jackpot-bg").style.display = "none";
     document.getElementById("jackpot-text-overlay").style.display = "none";
     document.getElementById("jackpot-money-overlay").style.display = "none";
 }
 
-// 🔄 reset
+// 🔄 RESET
 function resetGameToStart() {
+    stopSound();
     window.location.reload();
 }
 
-// 📈 BIG GAIN DETECTION
+// 📈 BIG JUMP (SAFE VISUAL ONLY)
 function isBigJump(oldVal, newVal) {
     if (oldVal < 500 && newVal >= 1500) return true;
     if (oldVal < 1000 && newVal >= 3000) return true;
@@ -116,53 +103,43 @@ function isBigJump(oldVal, newVal) {
 function generateMoney() {
     if (gameLocked) return;
 
-    let outcome = "";
+    previousAmount = currentAmount;
 
     const riskFactor = Math.min(currentAmount / 200, 0.5);
     const jackpotChance = Math.min(baseJackpotChance + pityBonus, 0.10);
     const roll = Math.random();
 
     let soulChance = 0.01;
-
     if (currentAmount >= 10000) {
         soulChance = 0.05 + Math.min(currentAmount / 200000, 0.20);
     }
 
-    previousAmount = currentAmount;
+    let outcome = "";
 
-    // 💀 SOUL
+    // 🎯 DECIDE OUTCOME FIRST (ONLY ONCE)
     if (roll < soulChance) {
         currentAmount = -Math.floor(Math.random() * 500 + 1);
         outcome = "SOUL";
     }
-
-    // 🎰 JACKPOT
     else if (roll < jackpotChance) {
         currentAmount = Math.floor(currentAmount * (Math.random() * 100 + 5));
         pityBonus = 0;
+        lossStreak = 0;
         outcome = "JACKPOT";
     }
-
-    // 💥 LOSS
     else if (roll < jackpotChance + riskFactor) {
         const drop = 0.20 + Math.random() * 0.5;
         currentAmount = Math.max(1, Math.floor(currentAmount * (1 - drop)));
 
         lossStreak++;
-        majorLossStreak++;
-
         pityBonus = Math.min(pityBonus + 0.01, 0.15);
 
         outcome = lossStreak >= 2 ? "MAJORLOSS" : "LOST";
     }
-
-    // 📈 WIN
     else {
         currentAmount = Math.floor(currentAmount * (1.1 + Math.random() * 0.5)) + 1;
-
         lossStreak = 0;
-        majorLossStreak = 0;
-
+        pityBonus = 0;
         outcome = "WON";
     }
 
@@ -170,16 +147,18 @@ function generateMoney() {
 
     moneyText.textContent = "$" + currentAmount;
 
-    // 💡 BIG GAIN FLASH
-    if (isBigJump(previousAmount, currentAmount)) {
-        const media = getRandomMedia(jackpotMedia);
-        showOutcomeBg("JACKPOT", currentAmount, media.gif);
-        playSound(media.sound);
+    // ⚠️ BIG JUMP DOES NOT OVERRIDE OUTCOME
+    if (isBigJump(previousAmount, currentAmount) && !gameLocked) {
+        showOutcomeBg("JACKPOT", currentAmount, rand(jackpotMedia).gif);
+        playSound(rand(jackpotMedia).sound);
     }
 
-    // 🎰 JACKPOT
+    // ======================
+    // FINAL UI STATES
+    // ======================
+
     if (outcome === "JACKPOT") {
-        const media = getRandomMedia(jackpotMedia);
+        const media = rand(jackpotMedia);
 
         hideJackpotBg();
         showOutcomeBg("JACKPOT", currentAmount, media.gif);
@@ -194,9 +173,8 @@ function generateMoney() {
         soulClickZone.style.display = "none";
     }
 
-    // 💥 MAJOR LOSS
     else if (outcome === "MAJORLOSS") {
-        const media = getRandomMedia(majorLossMedia);
+        const media = rand(majorLossMedia);
 
         hideJackpotBg();
         showOutcomeBg("MAJOR LOSS", currentAmount, media.gif);
@@ -211,9 +189,8 @@ function generateMoney() {
         soulClickZone.style.display = "none";
     }
 
-    // 💀 SOUL
     else if (outcome === "SOUL") {
-        const media = getRandomMedia(soulMedia);
+        const media = rand(soulMedia);
 
         hideJackpotBg();
         showOutcomeBg("SELL YOUR SOUL", currentAmount, media.gif);
@@ -226,11 +203,9 @@ function generateMoney() {
 
         topBox.style.display = "none";
         bottomBox.style.display = "none";
-
         soulClickZone.style.display = "block";
     }
 
-    // NORMAL
     else {
         hideJackpotBg();
 
@@ -239,7 +214,6 @@ function generateMoney() {
         isSoulCrashActive = false;
 
         mainTitle.style.visibility = "visible";
-
         topBox.style.display = "block";
         bottomBox.style.display = "block";
         soulClickZone.style.display = "none";
@@ -254,15 +228,14 @@ function generateMoney() {
     }
 }
 
-// 🖱️ MONEY CLICK
+// 🖱️ CLICK SYSTEM
 moneyImg.addEventListener("click", function () {
 
     if (waitingForNextRound) {
         waitingForNextRound = false;
         gameLocked = false;
 
-        stopSound(); // ✅ stops audio
-
+        stopSound();
         hideJackpotBg();
 
         mainTitle.style.visibility = "visible";
@@ -275,10 +248,9 @@ moneyImg.addEventListener("click", function () {
     generateMoney();
 });
 
-// 🖱️ SOUL RESTART
+// 🖱️ SOUL RESET
 soulClickZone.addEventListener("click", function () {
     if (isSoulCrashActive) {
-        stopSound(); // ✅ stops audio
         resetGameToStart();
     }
 });
