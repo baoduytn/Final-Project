@@ -21,10 +21,10 @@ const moneyImg = document.querySelector(".center-img");
 
 // 🎰 MEDIA
 const jackpotMedia = [
-    { gif: "assets/dolphin.gif", sound: "assets/casino win.mp3" },
-    { gif: "assets/me treasure.gif", sound: "assets/Me treasure.mp3" },
-    { gif: "assets/treasure chest.gif", sound: "assets/casino win.mp3" },
-    { gif: "assets/walter-white-i-won.gif", sound: "assets/casino win.mp3" }
+    { gif: "assets/dolphin.gif", sound: "assets/i-actually-won.mp3"},
+    { gif: "assets/me treasure.gif", sound: "assets/Me treasure.mp3"},
+    { gif: "assets/treasure chest.gif", sound: "assets/casino win.mp3"},
+    { gif: "assets/vince-mcmahon.gif", sound: "assets/casino win.mp3"}
 ];
 
 const majorLossMedia = [
@@ -126,7 +126,7 @@ function generateMoney() {
     else if (roll < jackpotChance) {
         const jackpotMultiplier = Math.random() * 700 + 10; // 5x–105x
         currentAmount = Math.floor(currentAmount * jackpotMultiplier);
-        pityBonus = 1.5;
+        pityBonus = 2.5;
         lossStreak = 0;
         outcome = "JACKPOT";
     }
@@ -198,11 +198,11 @@ function generateMoney() {
         bottomBox.style.display = "block";
         soulClickZone.style.display = "none";
         if (outcome === "LOST") {
-            topBox.textContent = "YOU LOST";
+            topBox.textContent = "AWW DANG IT";
             bottomBox.textContent = "YOU LOST";
         } else {
             topBox.textContent = "YOU WON";
-            bottomBox.textContent = "YOU WON";
+            bottomBox.textContent = "BET MORE!";
         }
     }
 }
