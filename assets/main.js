@@ -105,10 +105,12 @@ function generateMoney() {
 
     previousAmount = currentAmount;
 
-    const riskFactor = Math.min(currentAmount / 200, 0.5);
+    // Calculate roll and odds
+    const riskFactor = Math.min(currentAmount / 500, 0.5);
     const jackpotChance = Math.min(baseJackpotChance + pityBonus, 0.10);
     const roll = Math.random();
 
+    // Soul chance
     let soulChance = 0.01;
     if (currentAmount >= 10000) {
         soulChance = 0.05 + Math.min(currentAmount / 200000, 0.20);
@@ -116,108 +118,85 @@ function generateMoney() {
 
     let outcome = "";
 
-    // 🎯 DECIDE OUTCOME FIRST (ONLY ONCE)
+    // === Outcome calculation ===
     if (roll < soulChance) {
-        currentAmount = -Math.floor(Math.random() * 500 + 1);
+        currentAmount = 0; // or set to a small positive/zero number (to match old code behavior)
         outcome = "SOUL";
     }
     else if (roll < jackpotChance) {
-        currentAmount = Math.floor(currentAmount * (Math.random() * 100 + 5));
-        pityBonus = 0;
+        const jackpotMultiplier = Math.random() * 700 + 10; // 5x–105x
+        currentAmount = Math.floor(currentAmount * jackpotMultiplier);
+        pityBonus = 1.5;
         lossStreak = 0;
         outcome = "JACKPOT";
     }
     else if (roll < jackpotChance + riskFactor) {
-        const drop = 0.20 + Math.random() * 0.5;
+        const drop = 0.10 + Math.random() * 0.55;
         currentAmount = Math.max(1, Math.floor(currentAmount * (1 - drop)));
-
         lossStreak++;
-        pityBonus = Math.min(pityBonus + 0.01, 0.15);
-
-        outcome = lossStreak >= 2 ? "MAJORLOSS" : "LOST";
+        pityBonus = Math.min(pityBonus + 0.1, 1);
+        outcome = (lossStreak >= 2) ? "MAJORLOSS" : "LOST";
     }
     else {
-        currentAmount = Math.floor(currentAmount * (1.1 + Math.random() * 0.5)) + 1;
+        const growth = 1.05 + Math.random() * 0.55;
+        currentAmount = Math.floor(currentAmount * growth) + 1;
         lossStreak = 0;
         pityBonus = 0;
         outcome = "WON";
     }
 
-    if (currentAmount < 0) outcome = "SOUL";
+    // Clamp negative numbers for display
+    if (currentAmount < 0) currentAmount = 0;
 
+    // Always update money
     moneyText.textContent = "$" + currentAmount;
 
-    // ⚠️ BIG JUMP DOES NOT OVERRIDE OUTCOME
-    if (isBigJump(previousAmount, currentAmount) && !gameLocked) {
-        showOutcomeBg("JACKPOT", currentAmount, rand(jackpotMedia).gif);
-        playSound(rand(jackpotMedia).sound);
-    }
-
-    // ======================
-    // FINAL UI STATES
-    // ======================
+    // === UI display logic ===
+    hideJackpotBg(); // Always start by clearing overlays
 
     if (outcome === "JACKPOT") {
         const media = rand(jackpotMedia);
-
-        hideJackpotBg();
         showOutcomeBg("JACKPOT", currentAmount, media.gif);
         playSound(media.sound);
-
         gameLocked = true;
         waitingForNextRound = true;
-
         mainTitle.style.visibility = "hidden";
         topBox.style.display = "none";
         bottomBox.style.display = "none";
         soulClickZone.style.display = "none";
     }
-
     else if (outcome === "MAJORLOSS") {
         const media = rand(majorLossMedia);
-
-        hideJackpotBg();
         showOutcomeBg("MAJOR LOSS", currentAmount, media.gif);
         playSound(media.sound);
-
         gameLocked = true;
         waitingForNextRound = true;
-
         mainTitle.style.visibility = "hidden";
         topBox.style.display = "none";
         bottomBox.style.display = "none";
         soulClickZone.style.display = "none";
     }
-
     else if (outcome === "SOUL") {
         const media = rand(soulMedia);
-
-        hideJackpotBg();
         showOutcomeBg("SELL YOUR SOUL", currentAmount, media.gif);
         playSound(media.sound);
-
         gameLocked = true;
         isSoulCrashActive = true;
-
         mainTitle.style.visibility = "hidden";
-
         topBox.style.display = "none";
         bottomBox.style.display = "none";
         soulClickZone.style.display = "block";
     }
-
     else {
+        // Regular win or lose display
         hideJackpotBg();
-
         gameLocked = false;
         waitingForNextRound = false;
         isSoulCrashActive = false;
-
         mainTitle.style.visibility = "visible";
         topBox.style.display = "block";
         bottomBox.style.display = "block";
         soulClickZone.style.display = "none";
-
         if (outcome === "LOST") {
             topBox.textContent = "YOU LOST";
             bottomBox.textContent = "YOU LOST";
@@ -230,21 +209,16 @@ function generateMoney() {
 
 // 🖱️ CLICK SYSTEM
 moneyImg.addEventListener("click", function () {
-
     if (waitingForNextRound) {
         waitingForNextRound = false;
         gameLocked = false;
-
         stopSound();
         hideJackpotBg();
-
         mainTitle.style.visibility = "visible";
         topBox.style.display = "block";
         bottomBox.style.display = "block";
-
         return;
     }
-
     generateMoney();
 });
 
