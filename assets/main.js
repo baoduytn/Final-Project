@@ -1,4 +1,4 @@
-let currentAmount = 1;
+let currentAmount = 1; 
 let baseJackpotChance = 0.01;
 let pityBonus = 0;
 
@@ -9,7 +9,6 @@ let isSoulCrashActive = false;
 let gameLocked = false;
 let waitingForNextRound = false;
 
-// 🎯 TRACK LAST AMOUNT (for big jump detection)
 let previousAmount = 1;
 
 // 🎯 ELEMENTS
@@ -20,31 +19,53 @@ const moneyText = document.getElementById("moneyText");
 const soulClickZone = document.getElementById("soulClickZone");
 const moneyImg = document.querySelector(".center-img");
 
-// 🎰 GIFS
-const jackpotGifs = [
-    "assets/dolphin.gif",
-    "assets/me treasure.gif",
-    "assets/treasure chest.gif",
-    "assets/walter-white-i-won.gif",
+// 🎰 GIF + SOUND PAIRS
+const jackpotMedia = [
+    { gif: "assets/dolphin.gif", sound: ["assets/casino win.mp3","assets/i-actually-won.mp3"]},
+    { gif: "assets/me treasure.gif", sound: "assets/Me treasure.mp3" },
+    { gif: "assets/treasure chest.gif", sound: ["assets/casino win.mp3","assets/i-actually-won.mp3"]},
+    { gif: "assets/walter-white-i-won.gif", sound: "assets/casino win.mp3" }
 ];
 
-const majorLossGifs = [
-    "assets/ryan-gosling-bladerunner-2049.gif",
-    "assets/son.gif",
-    "assets/wheeze.gif",
-    "assets/ash-baby.gif"
+const majorLossMedia = [
+    { gif: "assets/ryan-gosling-bladerunner-2049.gif", sound: "assets/cry.mp3" },
+    { gif: "assets/son.gif", sound: "assets/Libet delay.mp3" },
+    { gif: "assets/wheeze.gif", sound: "assets/uncle ruckus theme.mp3" },
+    { gif: "assets/ash-baby.gif", sound: "assets/burning memory.mp3" }
 ];
 
-const soulGifs = [
-    "assets/elmo fire meme.gif",
-    "assets/coffin-dance.gif",
-    "assets/heavenly-father-i-am-cooked.gif",
-    "assets/no-im-dead.gif"
+const soulMedia = [
+    { gif: "assets/elmo fire meme.gif", sound: "assets/sisyphus boulder.mp3" },
+    { gif: "assets/heavenly-father-i-am-cooked.gif", sound: "assets/burning memory.mp3" },
+    { gif: "assets/no-im-dead.gif", sound: "assets/unshaken.mp3" }
 ];
 
-// 🎰 RANDOM
-function rand(arr) {
+// 🎰 RANDOM MEDIA
+function getRandomMedia(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// 🔊 AUDIO SYSTEM
+let currentAudio = null;
+
+function playSound(src) {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    currentAudio = new Audio(src);
+    currentAudio.volume = 0.7;
+    currentAudio.play();
+}
+
+// 🛑 STOP AUDIO
+function stopSound() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
 }
 
 // 🎭 OVERLAY
@@ -149,51 +170,54 @@ function generateMoney() {
 
     moneyText.textContent = "$" + currentAmount;
 
-    // 💡 BIG GAIN FLASH JACKPOT (COSMETIC ONLY)
+    // 💡 BIG GAIN FLASH
     if (isBigJump(previousAmount, currentAmount)) {
-        showOutcomeBg("JACKPOT", currentAmount, rand(jackpotGifs));
+        const media = getRandomMedia(jackpotMedia);
+        showOutcomeBg("JACKPOT", currentAmount, media.gif);
+        playSound(media.sound);
     }
 
-    // =====================
     // 🎰 JACKPOT
-    // =====================
     if (outcome === "JACKPOT") {
+        const media = getRandomMedia(jackpotMedia);
+
         hideJackpotBg();
-        showOutcomeBg("JACKPOT", currentAmount, rand(jackpotGifs));
+        showOutcomeBg("JACKPOT", currentAmount, media.gif);
+        playSound(media.sound);
 
         gameLocked = true;
         waitingForNextRound = true;
 
         mainTitle.style.visibility = "hidden";
-
         topBox.style.display = "none";
         bottomBox.style.display = "none";
         soulClickZone.style.display = "none";
     }
 
-    // =====================
     // 💥 MAJOR LOSS
-    // =====================
     else if (outcome === "MAJORLOSS") {
+        const media = getRandomMedia(majorLossMedia);
+
         hideJackpotBg();
-        showOutcomeBg("MAJOR LOSS", currentAmount, rand(majorLossGifs));
+        showOutcomeBg("MAJOR LOSS", currentAmount, media.gif);
+        playSound(media.sound);
 
         gameLocked = true;
         waitingForNextRound = true;
 
         mainTitle.style.visibility = "hidden";
-
         topBox.style.display = "none";
         bottomBox.style.display = "none";
         soulClickZone.style.display = "none";
     }
 
-    // =====================
     // 💀 SOUL
-    // =====================
     else if (outcome === "SOUL") {
+        const media = getRandomMedia(soulMedia);
+
         hideJackpotBg();
-        showOutcomeBg("SELL YOUR SOUL", currentAmount, rand(soulGifs));
+        showOutcomeBg("SELL YOUR SOUL", currentAmount, media.gif);
+        playSound(media.sound);
 
         gameLocked = true;
         isSoulCrashActive = true;
@@ -206,9 +230,7 @@ function generateMoney() {
         soulClickZone.style.display = "block";
     }
 
-    // =====================
     // NORMAL
-    // =====================
     else {
         hideJackpotBg();
 
@@ -239,6 +261,8 @@ moneyImg.addEventListener("click", function () {
         waitingForNextRound = false;
         gameLocked = false;
 
+        stopSound(); // ✅ stops audio
+
         hideJackpotBg();
 
         mainTitle.style.visibility = "visible";
@@ -254,6 +278,7 @@ moneyImg.addEventListener("click", function () {
 // 🖱️ SOUL RESTART
 soulClickZone.addEventListener("click", function () {
     if (isSoulCrashActive) {
+        stopSound(); // ✅ stops audio
         resetGameToStart();
     }
 });
