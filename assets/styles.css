@@ -3,18 +3,31 @@
     position: fixed;
     z-index: 1;
     inset: 0;
+
     width: 100vw;
     height: 100vh;
+
     background-size: cover;
     background-position: center;
+
     pointer-events: none;
+}
+
+
+:root {
+    --bar-height: clamp(80px, 14vh, 190px);
 }
 
 .gamble-box {
     background-color: rgb(255, 230, 0);
-    padding: 30px 50px;
+
+    height: var(--bar-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'Comic Relief', cursive, sans-serif;
-    font-size: 100px;
+    font-size: clamp(32px, 5vw, 100px);
     font-weight: bold;
     color: black;
     text-align: center;
@@ -36,20 +49,23 @@
 
 body {
     margin: 0;
-    padding-top: 160px;
-    padding-bottom: 160px;
+    padding-top: var(--bar-height);
+    padding-bottom: var(--bar-height);
     background-color: rgb(193, 243, 226);
     background-image: url('assets/me treasure.gif');
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
+    overflow-x: hidden;
 }
 
-/* center image */
 .center-img {
     display: block;
     margin: auto;
-    width: 650px;
-    margin-top: 80px;
+    width: min(650px, 70vw);
+    max-width: 100%;
+    height: auto;
+    margin-top: 5vh;
     margin-bottom: 20px;
     cursor: pointer;
 }
@@ -58,49 +74,50 @@ img {
     filter: none;
 }
 
-/* money text */
 #moneyText {
     color: rgba(64, 90, 79, 0.9);
+
     text-align: center;
-    font-size: 60px;
+
+    font-size: clamp(30px, 4vw, 60px);
+
     margin-top: 20px;
-    margin-bottom: 270px;
+    margin-bottom: 10vh;
 }
 
-/* overlays */
 #jackpot-text-overlay {
     display: none;
     position: fixed;
     z-index: 200;
-    top: 50%;
+    top: 42%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 160px;
+    font-size: clamp(50px, 9vw, 160px);
     font-family: 'Comic Relief', sans-serif;
     color: rgb(255, 230, 0);
     text-shadow: 6px 6px 30px #000;
     font-weight: bold;
     pointer-events: none;
     text-align: center;
+    line-height: 0.9;
+    width: 90vw;
 }
 
 #jackpot-money-overlay {
     display: none;
     position: fixed;
     z-index: 200;
-
-    top: 70%; /* 👈 moved down from 65% */
-
+    top: 72%;
     left: 50%;
     transform: translate(-50%, -50%);
-
-    font-size: 100px;
+    font-size: clamp(40px, 6vw, 100px);
     font-family: 'Comic Relief', sans-serif;
     color: rgb(255, 230, 0);
     text-shadow: 4px 4px 20px #000;
     font-weight: bold;
     pointer-events: none;
     text-align: center;
+    width: 90vw;
 }
 
 .jackpot-highlight {
@@ -108,7 +125,6 @@ img {
     text-shadow: 6px 6px 30px #000;
 }
 
-/* 💀 INVISIBLE SOUL CLICK ZONE */
 #soulClickZone {
     position: fixed;
     inset: 0;
@@ -116,4 +132,73 @@ img {
     z-index: 99999;
     cursor: pointer;
     background: transparent;
+}
+
+/* Larger monitors */
+
+@media (min-width: 2200px) {
+
+    #jackpot-text-overlay {
+        top: 44%;
+    }
+
+    #jackpot-money-overlay {
+        top: 70%;
+    }
+}
+
+/* Smaller screens */
+
+@media (max-width: 1200px) {
+
+    .center-img {
+        width: min(500px, 75vw);
+    }
+
+    #moneyText {
+        margin-bottom: 8vh;
+    }
+
+    #jackpot-text-overlay {
+        top: 40%;
+    }
+
+    #jackpot-money-overlay {
+        top: 74%;
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    :root {
+        --bar-height: 90px;
+    }
+
+    .gamble-box {
+        font-size: clamp(24px, 7vw, 50px);
+    }
+
+    .center-img {
+        width: 85vw;
+    }
+
+    #moneyText {
+        font-size: clamp(24px, 6vw, 40px);
+    }
+
+    #jackpot-text-overlay {
+        font-size: clamp(38px, 12vw, 80px);
+
+        top: 38%;
+
+        line-height: 0.85;
+    }
+
+    #jackpot-money-overlay {
+        font-size: clamp(28px, 9vw, 60px);
+
+        top: 76%;
+    }
 }
