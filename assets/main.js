@@ -118,9 +118,9 @@ function generateMoney() {
 
     let outcome = "";
 
-    // === Outcome calculation ===
+  
     if (roll < soulChance) {
-        currentAmount = 0; // or set to a small positive/zero number (to match old code behavior)
+        currentAmount = 0;
         outcome = "SOUL";
     }
     else if (roll < jackpotChance) {
